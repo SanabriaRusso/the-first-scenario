@@ -28,6 +28,11 @@
 #include "ns3/ptr.h"
 #include "ns3/address.h"
 #include "packet-loss-counter.h"
+
+//Adding the capability of functioning as a trace source
+#include "ns3/traced-value.h"
+#include "ns3/trace-source-accessor.h"
+
 namespace ns3 {
 /**
  * \ingroup applications
@@ -78,6 +83,14 @@ public:
    *  be a multiple of 8
    */
   void SetPacketWindowSize (uint16_t size);
+
+
+  /**
+    * \brief trace source definition
+    * \returns
+    */
+  typedef void (* TracedDelay) (Time *delay_old, Time *delay_new); 
+
 protected:
   virtual void DoDispose (void);
 
@@ -100,6 +113,7 @@ private:
   Ptr<Socket> m_socket6; //!< IPv6 Socket
   uint64_t m_received; //!< Number of received packets
   PacketLossCounter m_lossCounter; //!< Lost packet counter
+  TracedValue<Time> m_delay; //!< Tracks the IP of the sender
 };
 
 } // namespace ns3

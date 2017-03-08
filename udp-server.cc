@@ -18,7 +18,7 @@
  * Author: Amine Ismail <amine.ismail@sophia.inria.fr>
  *                      <amine.ismail@udcast.com>
  */
-//
+
 #include "ns3/log.h"
 #include "ns3/ipv4-address.h"
 #include "ns3/nstime.h"
@@ -59,6 +59,9 @@ UdpServer::GetTypeId (void)
                    MakeUintegerAccessor (&UdpServer::GetPacketWindowSize,
                                          &UdpServer::SetPacketWindowSize),
                    MakeUintegerChecker<uint16_t> (8,256))
+    .AddTraceSource ("Delay", "Ip of a sender",
+                    MakeTraceSourceAccessor (&UdpServer::m_delay),
+                    "ns3::Traced::Value::TracedDelay")
   ;
   return tid;
 }
@@ -172,6 +175,9 @@ UdpServer::HandleRead (Ptr<Socket> socket)
                            " TXtime: " << seqTs.GetTs () <<
                            " RXtime: " << Simulator::Now () <<
                            " Delay: " << Simulator::Now () - seqTs.GetTs ());
+
+              //updating the tracedSource
+              m_delay = Simulator::Now () - seqTs.GetTs ();
             }
           else if (Inet6SocketAddress::IsMatchingType (from))
             {
